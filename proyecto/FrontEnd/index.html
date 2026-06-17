@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego: Mayor o Menor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="logic.js">
+    <link rel="stylesheet" href="dom.js ">
+</head>
+<body>
+    <div id="seccion-login">
+        <div class="auth-wrapper">
+            <div class="login-container">
+                <h2>Bienvenido</h2>
+                <form onsubmit="event.preventDefault(); iniciarJuego();">
+                    <div class="input-group">
+                        <label for="usuario">Usuario</label>
+                        <input type="text" id="usuario" placeholder="Ingresa tu usuario" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+                    </div>
+                    <button type="submit" class="btn-login">Jugar Ahora</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="seccion-juego" style="display: none;">
+        <div id="contenedor-principal">
+            <header id="encabezado">
+                <div class="puntaje">SCORE <span id="valor-puntaje">0</span></div>
+                <div class="puntaje-alto">HIGHSCORE <span id="valor-puntaje-alto">0</span></div>
+            </header>
+
+            <main id="area-juego">
+                <section class="tarjeta-jugador" id="jugador-izquierdo">
+                    <div class="contenido-jugador">
+                        <div class="identificacion-jugador">
+                            <h2 class="nombre-jugador" id="txt-jugador1">jugador1</h2>
+                        </div>
+                        <div class="seccion-valor">
+                            <p class="etiqueta-valor">GOLES EN MUNDIALES</p>
+                            <hr class="linea-divisoria">
+                            <p class="valor-mercado" id="txt-cant1">0</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div id="medalla-vs">VS</div>
+
+                <section class="tarjeta-jugador" id="jugador-derecho">
+                    <div class="contenido-jugador">
+                        <div class="identificacion-jugador">
+                            <h2 class="nombre-jugador" id="txt-jugador2">jugador2</h2>
+                        </div>
+                        <div class="contenedor-botones">
+                            <button class="boton-juego boton-mayor">HIGHER △</button>
+                            <button class="boton-juego boton-menor">LOWER ▽</button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Función para cambiar de pantalla de forma limpia
+        function iniciarJuego() {
+            // Ocultamos toda la caja del login
+            document.getElementById('seccion-login').style.display = 'none';
+            // Mostramos toda la caja del juego
+            document.getElementById('seccion-juego').style.display = 'block';
+            console.log("Juego iniciado");
+        }
+
+        // --- Lógica del juego ---
+        let currentscore = 0;
+        let higherscore = 0;
+        let jugador1 = "jugador1";
+        let jugador2 = "jugador2";
+        let cant1 = 0;
+
+        function actualizarInterfaz() {
+            document.getElementById("valor-puntaje").innerText = currentscore;
+            document.getElementById("valor-puntaje-alto").innerText = higherscore;
+            document.getElementById("txt-jugador1").innerText = jugador1;
+            document.getElementById("txt-cant1").innerText = cant1;
+            document.getElementById("txt-jugador2").innerText = jugador2;
+        }
+
+        actualizarInterfaz();
+    </script>
+</body>
+</html>

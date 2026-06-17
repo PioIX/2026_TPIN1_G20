@@ -1,0 +1,269 @@
+
+/* Contenedor general que ahora hace de "body" para el login */
+#seccion-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #2c3e50;
+    font-family: sans-serif;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* El contenedor que envuelve ambos cuadros los apila en columna */
+#seccion-login .auth-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Separación entre el cuadro de login y el de registro */
+}
+
+/* Estilos compartidos para que ambos cuadrados midan lo mismo */
+#seccion-login .login-container, 
+#seccion-login .register-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+    width: 350px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+#seccion-login .input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+#seccion-login .input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+#seccion-login .input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#seccion-login .btn-login {
+    width: 100%;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#seccion-login .btn-login:hover {
+    background-color: #2980b9;
+}
+
+/* Estilo personalizado para el segundo botón */
+#seccion-login .btn-register {
+    width: 100%;
+    padding: 10px;
+    background-color: #2ecc71; /* Color verde de contraste */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.3s;
+}
+
+#seccion-login .btn-register:hover {
+    background-color: #27ae60;
+}
+
+#seccion-juego * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#seccion-juego {
+    background-color: #0b1320;
+    color: #1a1a1a;
+    height: 100vh;
+    width: 100%;
+}
+
+#seccion-juego #contenedor-principal {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+/* Encabezado */
+#seccion-juego #encabezado {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background-color: #0c182a;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+#seccion-juego .puntaje { color: #f87171; }
+#seccion-juego .puntaje-alto { color: #4ade80; }
+
+#seccion-juego #valor-puntaje, 
+#seccion-juego #valor-puntaje-alto {
+    color: white;
+    margin-left: 5px;
+}
+
+/* Área de Juego */
+#seccion-juego #area-juego {
+    display: flex;
+    flex: 1;
+    position: relative;
+    background-color: #e5e7eb;
+}
+
+/* Tarjetas de los jugadores */
+#seccion-juego .tarjeta-jugador {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+}
+
+#seccion-juego #jugador-izquierdo {
+    background: linear-gradient(to bottom, rgba(220, 220, 220, 0.8), rgba(200, 200, 200, 0.9));
+    border-right: 3px solid #0c182a;
+}
+
+#seccion-juego #jugador-derecho {
+    background: linear-gradient(to bottom, rgba(230, 230, 230, 0.8), rgba(210, 210, 210, 0.9));
+}
+
+#seccion-juego .contenido-jugador {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+}
+
+/* Identificación */
+#seccion-juego .identificacion-jugador {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+#seccion-juego .nombre-jugador {
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #1a1a1a;
+}
+
+/* Sección de Valor */
+#seccion-juego .seccion-valor {
+    margin-top: 20px;
+}
+
+#seccion-juego .etiqueta-valor {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+#seccion-juego .linea-divisoria {
+    width: 100%;
+    height: 2px;
+    background-color: #1a1a1a;
+    border: none;
+    margin: 8px 0;
+}
+
+#seccion-juego .valor-mercado {
+    font-size: 48px;
+    font-weight: 800;
+}
+
+/* Botones */
+#seccion-juego .contenedor-botones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 280px;
+}
+
+#seccion-juego .boton-juego {
+    padding: 16px 24px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 800;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.1s;
+    letter-spacing: 1px;
+}
+
+#seccion-juego .boton-juego:active {
+    transform: scale(0.96);
+}
+
+#seccion-juego .boton-mayor {
+    background-color: #4ade80;
+    box-shadow: 0 4px 0 #22c55e;
+}
+
+#seccion-juego .boton-menor {
+    background-color: #f87171;
+    box-shadow: 0 4px 0 #dc2626;
+}
+
+#seccion-juego .icono {
+    font-size: 14px;
+}
+
+/* Medalla VS del Centro */
+#seccion-juego #medalla-vs {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #0c182a;
+    color: white;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    font-size: 15px;
+    z-index: 10;
+}
