@@ -11,7 +11,8 @@
 <body>
     <div id="seccion-login">
         <div class="auth-wrapper">
-            <div class="login-container">
+            
+            <div class="login-container" id="box-login">
                 <h2>Bienvenido</h2>
                 <form onsubmit="event.preventDefault(); iniciarJuego();">
                     <div class="input-group">
@@ -24,74 +25,107 @@
                     </div>
                     <button type="submit" class="btn-login">Jugar Ahora</button>
                 </form>
+                <p class="toggle-auth">¿No tienes cuenta? <a href="#" onclick="cambiarVista('registro')">Regístrate aquí</a></p>
             </div>
+
+            <div class="login-container" id="box-registro" style="display: none;">
+                <h2>Crear Cuenta</h2>
+                <form onsubmit="event.preventDefault(); registrarUsuario();">
+                    <div class="input-group">
+                        <label for="reg-usuario">Usuario</label>
+                        <input type="text" id="reg-usuario" placeholder="Elige tu nombre de usuario" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg-email">Correo Electrónico</label>
+                        <input type="email" id="reg-email" placeholder="Ingresa tu correo" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg-password">Contraseña</label>
+                        <input type="password" id="reg-password" placeholder="Crea una contraseña" required>
+                    </div>
+                    <button type="submit" class="btn-login">Registrarse y Jugar</button>
+                </form>
+                <p class="toggle-auth">¿Ya tienes cuenta? <a href="#" onclick="cambiarVista('login')">Inicia sesión</a></p>
+            </div>
+
         </div>
     </div>
 
     <div id="seccion-juego" style="display: none;">
-        <div id="contenedor-principal">
-            <header id="encabezado">
-                <div class="puntaje">SCORE <span id="valor-puntaje">0</span></div>
-                <div class="puntaje-alto">HIGHSCORE <span id="valor-puntaje-alto">0</span></div>
-            </header>
+    <div id="contenedor-principal">
+        <header id="encabezado">
+            <div class="puntaje">SCORE <span id="valor-puntaje">0</span></div>
+            <div class="puntaje-alto">HIGHSCORE <span id="valor-puntaje-alto">0</span></div>
+        </header>
 
-            <main id="area-juego">
-                <section class="tarjeta-jugador" id="jugador-izquierdo">
-                    <div class="contenido-jugador">
-                        <div class="identificacion-jugador">
-                            <h2 class="nombre-jugador" id="txt-jugador1">jugador1</h2>
+        <main id="area-juego">
+            <section class="tarjeta-jugador" id="jugador-izquierdo">
+                <div class="contenido-jugador">
+                    <div class="identificacion-jugador">
+                        <div class="contenedor-bandera">
+                            <img id="bandera-jugador1" src="" alt="Bandera" class="mini-bandera">
                         </div>
-                        <div class="seccion-valor">
-                            <p class="etiqueta-valor">GOLES EN MUNDIALES</p>
-                            <hr class="linea-divisoria">
-                            <p class="valor-mercado" id="txt-cant1">0</p>
-                        </div>
+                        <h2 class="nombre-jugador" id="txt-jugador1">jugador1</h2>
                     </div>
-                </section>
-
-                <div id="medalla-vs">VS</div>
-
-                <section class="tarjeta-jugador" id="jugador-derecho">
-                    <div class="contenido-jugador">
-                        <div class="identificacion-jugador">
-                            <h2 class="nombre-jugador" id="txt-jugador2">jugador2</h2>
-                        </div>
-                        <div class="contenedor-botones">
-                            <button class="boton-juego boton-mayor">HIGHER △</button>
-                            <button class="boton-juego boton-menor">LOWER ▽</button>
-                        </div>
+                    <div class="seccion-valor">
+                        <p class="etiqueta-valor">GOLES EN MUNDIALES</p>
+                        <hr class="linea-divisoria">
+                        <p class="valor-mercado" id="txt-cant1">0</p>
                     </div>
-                </section>
-            </main>
-        </div>
+                </div>
+            </section>
+
+            <div id="medalla-vs">VS</div>
+
+            <section class="tarjeta-jugador" id="jugador-derecho">
+                <div class="contenido-jugador">
+                    <div class="identificacion-jugador">
+                        <div class="contenedor-bandera">
+                            <img id="bandera-jugador2" src="" alt="Bandera" class="mini-bandera">
+                        </div>
+                        <h2 class="nombre-jugador" id="txt-jugador2">jugador2</h2>
+                    </div>
+                    <div class="contenedor-botones">
+                        <button class="boton-juego boton-mayor">HIGHER △</button>
+                        <button class="boton-juego boton-menor">LOWER ▽</button>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
+</div>
 
-    <script>
-        // Función para cambiar de pantalla de forma limpia
-        function iniciarJuego() {
-            // Ocultamos toda la caja del login
-            document.getElementById('seccion-login').style.display = 'none';
-            // Mostramos toda la caja del juego
-            document.getElementById('seccion-juego').style.display = 'block';
-            console.log("Juego iniciado");
-        }
+<script>
+    // Función para cambiar de pantalla de forma limpia
+    function iniciarJuego() {
+        document.getElementById('seccion-login').style.display = 'none';
+        document.getElementById('seccion-juego').style.display = 'block';
+        console.log("Juego iniciado");
+    }
 
-        // --- Lógica del juego ---
-        let currentscore = 0;
-        let higherscore = 0;
-        let jugador1 = "jugador1";
-        let jugador2 = "jugador2";
-        let cant1 = 0;
+    // --- Lógica del juego ---
+    let currentscore = 0;
+    let higherscore = 0;
+    let jugador1 = "jugador1";
+    let jugador2 = "jugador2";
+    let cant1 = 0;
+    
+    let urlBandera1 = "https://upload.wikimedia.org/wikipedia/commons/0/0d/Color_negro.png"; 
+    let urlBandera2 = "https://upload.wikimedia.org/wikipedia/commons/0/0d/Color_negro.png"; 
 
-        function actualizarInterfaz() {
-            document.getElementById("valor-puntaje").innerText = currentscore;
-            document.getElementById("valor-puntaje-alto").innerText = higherscore;
-            document.getElementById("txt-jugador1").innerText = jugador1;
-            document.getElementById("txt-cant1").innerText = cant1;
-            document.getElementById("txt-jugador2").innerText = jugador2;
-        }
+    function actualizarInterfaz() {
+        document.getElementById("valor-puntaje").innerText = currentscore;
+        document.getElementById("valor-puntaje-alto").innerText = higherscore;
+        document.getElementById("txt-jugador1").innerText = jugador1;
+        document.getElementById("txt-cant1").innerText = cant1;
+        document.getElementById("txt-jugador2").innerText = jugador2;
+        
+        // NUEVO: Actualiza las banderas en la interfaz
+        document.getElementById("bandera-jugador1").src = urlBandera1;
+        document.getElementById("bandera-jugador2").src = urlBandera2;
+    }
 
-        actualizarInterfaz();
-    </script>
+    actualizarInterfaz();
+</script>
 </body>
 </html>

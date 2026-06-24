@@ -70,6 +70,14 @@ web_modules/
 .env.*
 *.env
 !.env.example
+.env
+*.env.
+env.
+*.env
+Back\.home.env
+Back\.pio.env
+Back/.home.env
+Back/.pio.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
