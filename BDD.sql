@@ -16,6 +16,7 @@ CREATE TABLE Jugadores (
 CREATE TABLE Usuarios (
     idUser INT PRIMARY KEY,
     username VARCHAR(50),
+    email VARCHAR(50),
     contrasenia VARCHAR(50),
     record INT,
     esAdmin BOOL
@@ -23,8 +24,10 @@ CREATE TABLE Usuarios (
 
 CREATE TABLE Partidas (
     idJuego INT PRIMARY KEY,
+    idUser INT,
     fecha DATE,
-    puntuacion INT
+    puntuacion INT,
+    FOREIGN KEY (idUser) REFERENCES Usuarios(idUser)
 );
 
 
@@ -304,3 +307,4 @@ INSERT INTO Jugadores (id, cantGoles, nombre, pais) VALUES
 (295, 1, 'Raphaël Varane', 'Francia'),
 (296, 1, 'Samuel Umtiti', 'Francia'),
 (297, 1, 'Laurent Blanc', 'Francia');
+

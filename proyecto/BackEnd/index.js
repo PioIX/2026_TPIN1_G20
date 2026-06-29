@@ -1,7 +1,7 @@
 
 app.post('/api/login', async function(req, res) {
-    var usuarioInput = req.body.user;       
-    var passwordInput = req.body.contraseña; // Cambiado a contraseña
+    var usuarioInput = req.body.username;       
+    var passwordInput = req.body.contrasenia; // Cambiado a contraseña
 
     try {
         
@@ -44,8 +44,8 @@ app.post('/api/login', async function(req, res) {
 
 
 app.post('/api/registro', async function(req, res) {
-    var usuarioInput = req.body.user;
-    var passwordInput = req.body.contraseña; // Cambiado a contraseña
+    var usuarioInput = req.body.username;
+    var passwordInput = req.body.contrasenia; // Cambiado a contraseña
 
     try {
         // Insertamos usando tus columnas exactas de la base de datos
