@@ -7,7 +7,7 @@
     "pio": "nodemon --env-file=.pio.env index.js",
     "home": "nodemon --env-file=.home.env index.js"
   },
-  "author": "Martin Rebora",
+  "author": "Martin Rebora y Felipe Nille",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",

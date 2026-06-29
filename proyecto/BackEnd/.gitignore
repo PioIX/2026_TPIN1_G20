@@ -74,11 +74,12 @@ web_modules/
 *.env
 *.env.*
 .env*
-
-# 4. EXCEPCIONES OBLIGATORIAS: Permitir únicamente las plantillas de ejemplo
 !.env.example
 !.env.example.*
 !*.env.example
+.pio.env
+.home.env
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
