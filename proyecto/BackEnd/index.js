@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+const { realizarQuery } = require('./modulos/mysql');
 const app = express(); 
 
 // Configuración para que tu API pueda recibir datos y ser consultada
@@ -9,15 +9,15 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// ==========================================
+
 // ENDPOINT: LOGIN
-// ==========================================
+
 app.post('/api/login', async function(req, res) {
     var usuarioInput = req.body.username;       
     var passwordInput = req.body.contrasenia; 
 
     try {
-        // CORRECCIÓN: Se cambió 'user' por 'username' según tu tabla SQL
+        // CORRECCIÓN: Se cambió 'user' por 'username'
         var buscarUsuario = await realizarQuery(`SELECT * FROM Usuarios WHERE username = '${usuarioInput}'`);
 
         if (buscarUsuario.length === 0) {
@@ -29,7 +29,7 @@ app.post('/api/login', async function(req, res) {
 
         var usuarioValido = buscarUsuario[0];
         
-        // CORRECCIÓN: Se cambió 'contraseña' por 'contrasenia' (sin Ñ) según tu tabla SQL
+        // CORRECCIÓN: Se cambió 'contraseña' por 'contrasenia' 
         if (usuarioValido.contrasenia === passwordInput) {
             // Login correcto
             res.send({
@@ -53,9 +53,8 @@ app.post('/api/login', async function(req, res) {
     }
 });
 
-// ==========================================
+
 // ENDPOINT: REGISTRO
-// ==========================================
 app.post('/api/registro', async function(req, res) {
     var usuarioInput = req.body.username;
     var passwordInput = req.body.contrasenia; 
@@ -87,6 +86,14 @@ app.post('/api/registro', async function(req, res) {
     }
 });
 
+app.get('/', function (req,res) {
+    res.send("Servidor corriendo")
+})
+
+app.get('/jugadores', async function (req,res){
+    let respuesta = await realizarQuery("SELECT * FROM Jugadores;")
+    res.send({jugadores: respuesta})
+})
 // Al final de tu archivo index.js, abajo de tus rutas
 const PORT = process.env.PORT || 4000;
 
@@ -96,3 +103,9 @@ app.listen(PORT, () => {
 
 
 // Nota: Asegúrate de tener tu función realizarQuery() vinculada y el app.listen() al final del archivo.
+
+app.post('/api/login', async function (req,res){
+    let respuesta = await realizarQuery("SELECT * FROM Usuarios;")
+    res.send({usuarios: respuesta})
+})
+
