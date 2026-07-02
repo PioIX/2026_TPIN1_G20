@@ -240,3 +240,69 @@ class UserInterface {
  * Objeto para manejar la UI en este TP, provisto por los docentes Pablo Morandi y Matias Marchesi.
  */
 const ui = new UserInterface();
+
+
+/*
+// ======================================================
+// dom.js
+// Objeto "ui": todos los métodos que logic.js necesita
+// para leer/escribir el DOM (login, registro, modal, etc.)
+// ======================================================
+
+const ui = {
+  // --- Lectura de inputs del formulario ---
+  getEmail: function () {
+    return document.getElementById('email').value.trim();
+  },
+
+  getPassword: function () {
+    return document.getElementById('password').value;
+  },
+
+  getUser: function () {
+    return document.getElementById('username').value.trim();
+  },
+
+  // --- Escritura / estado visual ---
+  setUser: function (name) {
+    document.getElementById('loggedUsername').innerText = 'Hola, ' + name;
+  },
+
+  changeScreen: function () {
+    const login = document.getElementById('loginForm');
+    const notepad = document.getElementById('notepad');
+
+    if (login.style.display === 'none') {
+      login.style.display = 'flex';
+      notepad.style.display = 'none';
+    } else {
+      login.style.display = 'none';
+      notepad.style.display = 'block';
+    }
+  },
+
+  clearLoginInputs: function () {
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('username').value = '';
+  },
+
+  // --- Modal ---
+  // Soporta showModal("mensaje") y showModal("titulo", "mensaje")
+  showModal: function (titulo, mensaje) {
+    if (mensaje === undefined) {
+      mensaje = titulo;
+      titulo = 'Aviso';
+    }
+    document.getElementById('modal-titulo').innerText = titulo;
+    document.getElementById('modal-mensaje').innerText = mensaje;
+    document.getElementById('modal').style.display = 'flex';
+  },
+
+
+
+// ======================================================
+// Datos globales que logic.js espera encontrar
+// (no estaban definidos en el fragmento de logic.js)
+// ======================================================
+*/

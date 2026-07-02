@@ -1,4 +1,4 @@
-function login(email, password) {
+/*function login(email, password) {
   for (let i = 0; i < users.length; i++) {
     if (email === users[i].email) {
       if (password === users[i].password) {
@@ -72,5 +72,23 @@ function logout() {
     ui.showModal("Cierre de sesión cancelado");
   }
 }
+*/
+async function llamadoAlGet() {
+      const response = await fetch('https://localhost:4000', {
+        method: "GET", 
+        headers: {
+            "Content-Type": "application/json",
+        },
+      })
+    };
+let result = await response.json();
 
-
+async function llamadoAlPost(datos) {
+  const response = await fetch('https://localhost:4000', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(datos) 
+  });
+}

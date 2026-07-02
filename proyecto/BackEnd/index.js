@@ -53,7 +53,6 @@ app.post('/api/login', async function(req, res) {
     }
 });
 
-
 // REGISTRO
 app.post('/api/registro', async function(req, res) {
     var usuarioInput = req.body.username;
@@ -108,13 +107,6 @@ app.post('/api/login', async function (req,res){
 })
 
 
-
-//const express = require('express');
-const app = express();
-
-// Asegúrate de tener este middleware para poder leer los datos que envías en el body (JSON)
-app.use(express.json()); 
-
 // =========================================================================
 // NOTA: Asegúrate de tener declarada aquí arriba tu función realizarQuery()
 // =========================================================================
@@ -137,8 +129,6 @@ app.get('/jugadores', async function (req, res) {
     }
 });
 
-
-/* ==========================================
 // AUTENTICACIÓN (LOGIN Y REGISTRO)
 // ==========================================
 
@@ -212,6 +202,22 @@ app.post('/api/registro', async function(req, res) {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 //* ==========================================
 // LÓGICA DEL JUEGO (HIGHER OR LOWER)
 // ==========================================
