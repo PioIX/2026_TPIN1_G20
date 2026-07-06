@@ -5,9 +5,13 @@ class User {
     contadorUser++;
     this.idUser= contadorUser;
     this.username = username;
-    this.mail = email;
+    this.email = email;
     this.contrasenia = contrasenia;
-    this.record = record;
+    this.record = 0;
     this.esAdmin = esAdmin;
   }
 }
+
+const users = [
+  new User("ejemplo","ejemplo@gmail.com","pass",false)
+]
