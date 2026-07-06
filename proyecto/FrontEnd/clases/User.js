@@ -1,6 +1,6 @@
 let contadorUser = 0;
 class User {
-  constructor(username, email, contrasenia, record, esAdmin ) {
+  constructor(username, email, contrasenia, esAdmin ) {
 
     contadorUser++;
     this.idUser= contadorUser;
@@ -12,6 +12,3 @@ class User {
   }
 }
 
-const users = [
-  new User("ejemplo","ejemplo@gmail.com","pass",false)
-]

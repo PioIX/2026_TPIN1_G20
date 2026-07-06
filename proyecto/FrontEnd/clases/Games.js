@@ -1,15 +1,12 @@
 
 
-let contadorUser = 0;
-class User {
-  constructor(username, fecha, puntuacion) {
-
+let contadorGame = 0; // Declaración que faltaba
+class Game {          // Cambiado a Game
+  constructor(username, puntuacion) {
     contadorGame++;
-    this.idJuego= contadorGame;
+    this.idJuego = contadorGame;
+    this.username = username;
     this.fecha = new Date().toLocaleDateString();
     this.puntuacion = puntuacion;
   }
 }
-
-
-/*new Date().toLocaleDateString();*/
