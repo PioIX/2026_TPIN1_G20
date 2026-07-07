@@ -1,4 +1,3 @@
-
 let userLoged = 0;
 
 let users = [
@@ -93,12 +92,13 @@ function handleRegister() {
   let res = register(name, email, password);
   
   if (res === -2) {
-    ui.setUser(name); 
-    handleLogin(); 
+    ui.setUser(name);
+    ui.showModal("Correo Registrado!", "ahora inicie sesión para jugar")
   } else {
     ui.showModal("Error", "Este correo ya está registrado");
   }
 }
+
 
 
 //logout

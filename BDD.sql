@@ -15,9 +15,9 @@ CREATE TABLE Jugadores (
 
 CREATE TABLE Usuarios (
     idUser INT PRIMARY KEY,
-    username VARCHAR(50),
+    `name` VARCHAR(50),
     email VARCHAR(50),
-    contrasenia VARCHAR(50),
+    `password` VARCHAR(50),
     record INT,
     esAdmin BOOL
     );
@@ -308,3 +308,4 @@ INSERT INTO Jugadores (id, cantGoles, nombre, pais) VALUES
 (296, 1, 'Samuel Umtiti', 'Francia'),
 (297, 1, 'Laurent Blanc', 'Francia');
 
+select * from Jugadores

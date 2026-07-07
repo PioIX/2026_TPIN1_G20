@@ -1,14 +1,12 @@
 let contadorUser = 0;
 class User {
-  constructor(username, email, contrasenia, esAdmin ) {
-
+  constructor(name, email, password, esAdmin = false) {
     contadorUser++;
-    this.idUser= contadorUser;
-    this.username = username;
+    this.idUser = contadorUser;
+    this.name = name;
     this.email = email;
-    this.contrasenia = contrasenia;
+    this.password = password;
     this.record = 0;
     this.esAdmin = esAdmin;
   }
 }
-

@@ -13,12 +13,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //  LOGIN
 
 app.post('/api/login', async function(req, res) {
-    var usuarioInput = req.body.username;       
-    var passwordInput = req.body.contrasenia; 
+    var usuarioInput = req.body.name;       
+    var passwordInput = req.body.password; 
 
     try {
        
-        var buscarUsuario = await realizarQuery(`SELECT * FROM Usuarios WHERE username = '${usuarioInput}'`);
+        var buscarUsuario = await realizarQuery(`SELECT * FROM Usuarios WHERE name = '${usuarioInput}'`);
 
         if (buscarUsuario.length === 0) {
             return res.status(404).send({
@@ -30,14 +30,14 @@ app.post('/api/login', async function(req, res) {
         var usuarioValido = buscarUsuario[0];
         
        
-        if (usuarioValido.contrasenia === passwordInput) {
+        if (usuarioValido.password === passwordInput) {
             
             res.send({
                 loginExitoso: true,
                 mensaje: "¡Ingreso exitoso!",
                 usuario: { 
                     idUser: usuarioValido.idUser,
-                    username: usuarioValido.username 
+                    name: usuarioValido.name 
                 }
             });
         } else {
@@ -55,8 +55,9 @@ app.post('/api/login', async function(req, res) {
 
 // REGISTRO
 app.post('/api/registro', async function(req, res) {
-    var usuarioInput = req.body.username;
-    var passwordInput = req.body.contrasenia; 
+    var usuarioInput = req.body.name;
+    var emailInput = req.body.email;
+    var passwordInput = req.body.password; 
 
     try {
         
@@ -65,8 +66,8 @@ app.post('/api/registro', async function(req, res) {
 
         
         await realizarQuery(`
-            INSERT INTO Usuarios (idUser, username, contrasenia, record, esAdmin) 
-            VALUES (${nextId}, '${usuarioInput}', '${passwordInput}', 0, 0)
+            INSERT INTO Usuarios (idUser, name, email, password, record, esAdmin) 
+            VALUES (${nextId}, '${usuarioInput}', '${emailImput}' '${passwordInput}', 0, 0)
         `);
         
         res.send({
@@ -134,11 +135,11 @@ app.get('/jugadores', async function (req, res) {
 
 // LOGIN
 app.post('/api/login', async function(req, res) {
-    var usuarioInput = req.body.username;       
-    var passwordInput = req.body.contrasenia; 
+    var usuarioInput = req.body.name;       
+    var passwordInput = req.body.password; 
 
     try {
-        var buscarUsuario = await realizarQuery(`SELECT * FROM Usuarios WHERE username = '${usuarioInput}'`);
+        var buscarUsuario = await realizarQuery(`SELECT * FROM Usuarios WHERE name = '${usuarioInput}'`);
 
         if (buscarUsuario.length === 0) {
             return res.status(404).send({
@@ -149,13 +150,13 @@ app.post('/api/login', async function(req, res) {
 
         var usuarioValido = buscarUsuario[0];
         
-        if (usuarioValido.contrasenia === passwordInput) {
+        if (usuarioValido.password === passwordInput) {
             res.send({
                 loginExitoso: true,
                 mensaje: "¡Ingreso exitoso!",
                 usuario: { 
                     idUser: usuarioValido.idUser,
-                    username: usuarioValido.username,
+                    name: usuarioValido.name,
                     record: usuarioValido.record
                 }
             });
@@ -174,16 +175,16 @@ app.post('/api/login', async function(req, res) {
 
 // REGISTRO (Adaptado a tu tabla con 'email')
 app.post('/api/registro', async function(req, res) {
-    var usuarioInput = req.body.username;
+    var usuarioInput = req.body.name;
     var emailInput = req.body.email; // Agregado según tu estructura de tabla
-    var passwordInput = req.body.contrasenia; 
+    var passwordInput = req.body.password; 
 
     try {
         var maxIdResult = await realizarQuery('SELECT MAX(idUser) as maxId FROM Usuarios');
         var nextId = (maxIdResult[0].maxId || 0) + 1;
 
         await realizarQuery(`
-            INSERT INTO Usuarios (idUser, username, email, contrasenia, record, esAdmin) 
+            INSERT INTO Usuarios (idUser, name, email, password, record, esAdmin) 
             VALUES (${nextId}, '${usuarioInput}', '${emailInput}', '${passwordInput}', 0, 0)
         `);
         
