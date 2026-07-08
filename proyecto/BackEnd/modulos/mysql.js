@@ -22,20 +22,21 @@ const SQL_CONFIGURATION_DATA =
  */
 exports.realizarQuery = async function (queryString)
 {
-	let returnObject;
 	let connection;
 	try
 	{
 		connection = await mySql.createConnection(SQL_CONFIGURATION_DATA);
-		returnObject = await connection.execute(queryString);
+		const [rows] = await connection.execute(queryString);
+		return rows;
 	}
 	catch(err)
 	{
 		console.log(err);
+		throw err; // Importante: se relanza para que la ruta que llamó reciba el error real
+		           // (antes se tragaba el error y explotaba después con un TypeError confuso)
 	}
 	finally
 	{
 		if(connection && connection.end) connection.end();
 	}
-	return returnObject[0];
 }
