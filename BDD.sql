@@ -1,8 +1,9 @@
 DROP TABLE IF EXISTS Jugadores;
 DROP TABLE IF EXISTS estadios;
 DROP TABLE IF EXISTS clubes;
-DROP TABLE IF EXISTS Usuarios;
 DROP TABLE IF EXISTS Partidas;
+DROP TABLE IF EXISTS Usuarios;
+
 
 
 
@@ -15,9 +16,9 @@ CREATE TABLE Jugadores (
 
 CREATE TABLE Usuarios (
     idUser INT PRIMARY KEY,
-    `name` VARCHAR(50),
-    email VARCHAR(50),
-    `password` VARCHAR(50),
+    `name` VARCHAR(500),
+    email VARCHAR(500),
+    `password` VARCHAR(500),
     record INT,
     esAdmin BOOL
     );
