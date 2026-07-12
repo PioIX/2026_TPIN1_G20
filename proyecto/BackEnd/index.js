@@ -143,6 +143,16 @@ app.post('/api/registro', async function (req, res) {
     }
 });
 
+//----------Jugadores---------
+app.get('/jugadores', async function (req, res) {
+    try {
+        let respuesta = await realizarQuery("SELECT * FROM Jugadores;");
+        res.send({ jugadores: respuesta });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
+
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {

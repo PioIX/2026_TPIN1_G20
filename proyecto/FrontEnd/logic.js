@@ -1,7 +1,44 @@
 let userLoged = 0;
+let recordUsuario = 0;
 
-const API_URL = "http://localhost:4000"; // http, no https: el server no tiene certificado SSL
+const API_URL = "http://localhost:4000";
 
+// ---------- ESTADO DEL JUEGO ----------
+let jugadorIzquierdo = null; 
+let jugadorDerecho = null; 
+
+//-----------juago----------
+function iniciarJuego() {
+    document.getElementById('seccion-login').style.display = 'none';
+    document.getElementById('seccion-gameover').style.display = 'none';
+    document.getElementById('seccion-juego').style.display = 'block';
+
+    if (jugadores.length < 2) {
+        console.error("No hay suficientes jugadores cargados para iniciar el juego");
+        return;
+    }
+
+    let indiceIzquierdo = Math.floor(Math.random() * jugadores.length);
+    let indiceDerecho = Math.floor(Math.random() * jugadores.length);
+    while (indiceDerecho === indiceIzquierdo) {
+        indiceDerecho = Math.floor(Math.random() * jugadores.length);
+    }
+
+    jugadorIzquierdo = jugadores[indiceIzquierdo];
+    jugadorDerecho = jugadores[indiceDerecho];
+
+    jugador1 = jugadorIzquierdo.nombre;
+    jugador2 = jugadorDerecho.nombre;
+    cant1 = jugadorIzquierdo.cantGoles;
+
+    urlBandera1 = "imagenes/" + jugadorIzquierdo.pais + ".png";
+    urlBandera2 = "imagenes/" + jugadorDerecho.pais + ".png";
+
+    currentscore = 0;
+
+    actualizarInterfaz();
+}
+  
 // ---------- Llamadas al backend ----------
 async function llamadoAlGet(endpoint) {
   try {
@@ -34,21 +71,20 @@ async function llamadoAlPost(endpoint, datos) {
 }
 
 // ---------- JUGADORES ----------
-let jugadores = []; // acá se guardan las instancias de Jugador traídas de la BD
-
-/**
- * Pide al backend la tabla Jugadores (GET /jugadores) y llena el array `jugadores`
- * con instancias de la clase Jugador, una por cada fila que devuelva la BD.
- */
 async function cargarJugadores() {
   const respuesta = await llamadoAlGet("/jugadores");
 
+  jugadores = [];
+
   if (respuesta && Array.isArray(respuesta.jugadores)) {
-    jugadores = respuesta.jugadores.map(fila => new Jugador(fila));
+    for (let i = 0; i < respuesta.jugadores.length; i++) {
+      let fila = respuesta.jugadores[i];
+      let nuevoJugador = new Jugador(fila.nombre, fila.cantGoles, fila.pais);
+      jugadores.push(nuevoJugador);
+    }
     console.log("Jugadores cargados desde la BD:", jugadores);
   } else {
     console.error("No se pudieron cargar los jugadores desde el servidor");
-    jugadores = [];
   }
 
   return jugadores;
@@ -98,12 +134,13 @@ async function handleLogin() {
       ui.showModal("Error del servidor", res.mensaje);
       break;
     case "OK":
-      ui.setUser(res.usuario.name);
-      ui.changeScreen();
-      await cargarJugadores();
+      recordUsuario = res.usuario.record;
+      try {
+        await cargarJugadores();
+      } catch (error) {
+        console.error("Error cargando jugadores:", error);
+      }
       iniciarJuego();
-      console.log("Bienvenido " + res.usuario.name + "!", "Inicio de sesion exitoso");
-      break;
   }
 }
 
@@ -161,4 +198,74 @@ function logout() {
   } else {
     ui.showModal("Cierre de sesión cancelado");
   }
+}
+
+// ---------- MAYOR / MENOR ----------
+function mayor() {
+  procesarEleccion("mayor");
+}
+
+function menor() {
+  procesarEleccion("menor");
+}
+
+function procesarEleccion(eleccion) {
+  let golesIzquierdo = jugadorIzquierdo.cantGoles;
+  let golesDerecho = jugadorDerecho.cantGoles;
+
+  let esCorrecto;
+  if (golesDerecho === golesIzquierdo) {
+    esCorrecto = true; // empate: siempre cuenta como acierto
+  } else if (eleccion === "mayor") {
+    esCorrecto = golesDerecho > golesIzquierdo;
+  } else {
+    esCorrecto = golesDerecho < golesIzquierdo;
+  }
+
+  if (esCorrecto) {
+    currentscore++;
+    if (currentscore > higherscore) {
+      higherscore = currentscore;
+    }
+
+    // El jugador que estaba oculto a la derecha pasa a la izquierda, ya visible
+    jugadorIzquierdo = jugadorDerecho;
+    jugador1 = jugadorIzquierdo.nombre;
+    cant1 = jugadorIzquierdo.cantGoles;
+    urlBandera1 = jugadorIzquierdo.bandera;
+
+    // Nuevo jugador random a la derecha, distinto del que acaba de pasar a la izquierda
+    jugadorDerecho = elegirJugadorRandomDistintoDe(jugadorIzquierdo);
+    jugador2 = jugadorDerecho.nombre;
+    urlBandera2 = jugadorDerecho.bandera;
+
+    actualizarInterfaz();
+  } else {
+    mostrarPantallaFinal();
+  }
+}
+
+function elegirJugadorRandomDistintoDe(jugadorAExcluir) {
+  let indice = Math.floor(Math.random() * jugadores.length);
+  while (jugadores[indice] === jugadorAExcluir) {
+    indice = Math.floor(Math.random() * jugadores.length);
+  }
+  return jugadores[indice];
+}
+
+// ---------- FIN DE PARTIDA ----------
+function mostrarPantallaFinal() {
+  if (currentscore > recordUsuario) {
+    recordUsuario = currentscore;
+  }
+
+  document.getElementById('seccion-juego').style.display = 'none';
+  document.getElementById('seccion-gameover').style.display = 'block';
+
+  document.getElementById('gameover-puntaje').innerText = currentscore;
+  document.getElementById('gameover-record').innerText = recordUsuario;
+}
+
+function continuarJuego() {
+  iniciarJuego();
 }
