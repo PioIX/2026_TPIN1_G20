@@ -209,7 +209,11 @@ function logout() {
   if (confirmacion === true) {
     userLoged = 0;
     ui.clearLoginInputs();
-    ui.changeScreen();
+
+    document.getElementById('seccion-juego').style.display = 'none';
+    document.getElementById('seccion-gameover').style.display = 'none';
+    document.getElementById('seccion-login').style.display = 'flex';
+
     ui.showModal("Sesión cerrada correctamente");
   } else {
     ui.showModal("Cierre de sesión cancelado");

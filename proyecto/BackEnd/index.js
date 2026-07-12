@@ -144,23 +144,14 @@ app.post('/api/registro', async function (req, res) {
 
     app.post('/api/actualizar-record', async function (req, res) {
     const { idUser, record } = req.body;
-
     if (!idUser || record === undefined) {
-        return res.status(400).send({
-            error: "DATOS_INCOMPLETOS",
-            mensaje: "Debes enviar idUser y record."
-        });
+        return res.status(400).send({ error: "DATOS_INCOMPLETOS", mensaje: "Debes enviar idUser y record." });
     }
-
     try {
         await realizarQuery("UPDATE Usuarios SET record = ? WHERE idUser = ?", [record, idUser]);
         res.send({ actualizado: true });
     } catch (error) {
-        res.status(500).send({
-            actualizado: false,
-            mensaje: "No se pudo actualizar el récord",
-            error: error.message
-        });
+        res.status(500).send({ actualizado: false, mensaje: "No se pudo actualizar el récord", error: error.message });
     }
 });
 });
