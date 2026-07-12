@@ -1,5 +1,6 @@
 let userLoged = 0;
 let recordUsuario = 0;
+let users = [];
 
 const API_URL = "http://localhost:4000";
 
@@ -69,7 +70,12 @@ async function llamadoAlPost(endpoint, datos) {
     return { status: 0, data: null };
   }
 }
-
+async function actualizarRecordEnBackend(idUser, nuevoRecord) {
+  const resultado = await llamadoAlPost("/api/actualizar-record", { idUser, record: nuevoRecord });
+  if (resultado.status !== 200) {
+    console.error("No se pudo guardar el nuevo récord en la base de datos");
+  }
+}
 // ---------- JUGADORES ----------
 async function cargarJugadores() {
   const respuesta = await llamadoAlGet("/jugadores");
@@ -135,12 +141,22 @@ async function handleLogin() {
       break;
     case "OK":
       recordUsuario = res.usuario.record;
+
+      try {
+        let usuarioActual = new User(res.usuario.name, email, password);
+        usuarioActual.idUser = res.usuario.idUser; // pisa el id autogenerado por el real de la BD
+        usuarioActual.record = res.usuario.record;
+        users.push(usuarioActual);
+      } catch (error) {
+        console.error("Error guardando usuario en el array 'users':", error);
+      }
+
       try {
         await cargarJugadores();
       } catch (error) {
         console.error("Error cargando jugadores:", error);
       }
-      iniciarJuego();
+  iniciarJuego();
   }
 }
 
@@ -202,14 +218,14 @@ function logout() {
 
 // ---------- MAYOR / MENOR ----------
 function mayor() {
-  procesarEleccion("mayor");
+  HoL("mayor");
 }
 
 function menor() {
-  procesarEleccion("menor");
+  HoL("menor");
 }
 
-function procesarEleccion(eleccion) {
+function HoL(eleccion) {
   let golesIzquierdo = jugadorIzquierdo.cantGoles;
   let golesDerecho = jugadorDerecho.cantGoles;
 
@@ -232,12 +248,12 @@ function procesarEleccion(eleccion) {
     jugadorIzquierdo = jugadorDerecho;
     jugador1 = jugadorIzquierdo.nombre;
     cant1 = jugadorIzquierdo.cantGoles;
-    urlBandera1 = jugadorIzquierdo.bandera;
+    urlBandera1 = "imagenes/" + jugadorIzquierdo.pais + ".png";
 
     // Nuevo jugador random a la derecha, distinto del que acaba de pasar a la izquierda
     jugadorDerecho = elegirJugadorRandomDistintoDe(jugadorIzquierdo);
     jugador2 = jugadorDerecho.nombre;
-    urlBandera2 = jugadorDerecho.bandera;
+    urlBandera2 = "imagenes/" + jugadorDerecho.pais + ".png";
 
     actualizarInterfaz();
   } else {
@@ -257,6 +273,15 @@ function elegirJugadorRandomDistintoDe(jugadorAExcluir) {
 function mostrarPantallaFinal() {
   if (currentscore > recordUsuario) {
     recordUsuario = currentscore;
+
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].idUser === userLoged) {
+        users[i].record = recordUsuario;
+      }
+    }
+
+    // Lo persiste en la base de datos
+    actualizarRecordEnBackend(userLoged, recordUsuario);
   }
 
   document.getElementById('seccion-juego').style.display = 'none';
