@@ -70,8 +70,25 @@ async function llamadoAlPost(endpoint, datos) {
     return { status: 0, data: null };
   }
 }
+async function llamadoAlPut(endpoint, datos) {
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos)
+    });
+    const data = await response.json();
+    return { status: response.status, data };
+  } catch (error) {
+    // Esto se dispara SOLO si el fetch no pudo ni siquiera llegar al servidor
+    // (server apagado, puerto mal, CORS bloqueado, etc.)
+    console.error("Error en llamadoAlPut (sin conexión real):", error);
+    return { status: 0, data: null };
+  }
+}
+
 async function actualizarRecordEnBackend(idUser, nuevoRecord) {
-  const resultado = await llamadoAlPost("/api/actualizar-record", { idUser, record: nuevoRecord });
+  const resultado = await llamadoAlPut("/api/actualizar-record", { idUser, record: nuevoRecord });
   if (resultado.status !== 200) {
     console.error("No se pudo guardar el nuevo récord en la base de datos");
   }

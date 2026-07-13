@@ -142,7 +142,7 @@ app.post('/api/registro', async function (req, res) {
         });
     }
 
-    app.post('/api/actualizar-record', async function (req, res) {
+    app.put('/api/actualizar-record', async function (req, res) {
     const { idUser, record } = req.body;
     if (!idUser || record === undefined) {
         return res.status(400).send({ error: "DATOS_INCOMPLETOS", mensaje: "Debes enviar idUser y record." });
