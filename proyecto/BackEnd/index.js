@@ -32,7 +32,7 @@ app.get('/jugadores', async function (req, res) {
 // AUTENTICACIÓN (LOGIN Y REGISTRO)
 // ==========================================
 
-// LOGIN — busca por email, que es lo que manda el formulario de login del front
+t
 app.post('/api/login', async function (req, res) {
     const { email, password } = req.body;
 
@@ -57,7 +57,7 @@ app.post('/api/login', async function (req, res) {
         let passwordCorrecta;
 
         if (usuarioValido.password.startsWith('$2')) {
-            // Password guardada como hash bcrypt (usuarios nuevos)
+            
             passwordCorrecta = await bcrypt.compare(password, usuarioValido.password);
         } else {
             // Compatibilidad con passwords viejas en texto plano: si coincide,
