@@ -49,7 +49,7 @@ class UserInterface {
     /**
      * Si se está mostrando la pantalla de login la oculta y muestra la de notas. Y viceversa.
      */
-changeScreen() {
+changeScreenUser() {
         const notepad = document.getElementById("notepad");
         const loginForm = document.getElementById("loginForm");
         if (notepad.style.display !== "none") {
@@ -64,6 +64,17 @@ changeScreen() {
             loginForm.style.display = "none";
         }
     }
+
+changeScreenAdmin() {
+    const Admin = document.getElementById("idAdmin");
+    const login = document.getElementById("login");
+    
+    
+    const emailInput = document.getElementById("email").value;
+    const passwordInput = document.getElementById("password").value;
+
+    
+    
 
     /**
      * Dibuja una nueva nota en la parte inferior de la pantalla con DOM a partir de los datos ingresados.

@@ -135,7 +135,23 @@ async function login(email, password) {
     tipo: "ERROR_SERVIDOR",
     mensaje: (resultado.data && (resultado.data.mensaje || resultado.data.error)) || "Error desconocido del servidor"
   };
+
+   if (emailInput === "Admin@gmail.com" && passwordInput === "Admin123") {
+        
+        if (notepad.style.display !== "none") {
+            notepad.style.display = "none";
+            loginForm.style.display = ""; 
+           ; 
+        } else {
+            notepad.style.display = "";
+            loginForm.style.display = "none";
+        }
+        
+    } else {
+        alert("Credenciales incorrectas. Acceso denegado.");
+    }
 }
+
 
 async function handleLogin() {
   let email = ui.getEmail();
