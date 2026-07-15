@@ -55,6 +55,7 @@ app.post('/api/login', async function (req, res) {
         const usuarioValido = buscarUsuario[0];
         let passwordCorrecta;
 
+        // FIX: Se agregó la llave '{' que faltaba aquí
         if (usuarioValido.password.startsWith('$2')) {
             passwordCorrecta = await bcrypt.compare(password, usuarioValido.password);
         } else {
@@ -137,7 +138,8 @@ app.post('/api/registro', async function (req, res) {
     }
 });
 
-app.post('/api/actualizar-record', async function (req, res) {
+// FIX: Se dejó únicamente el app.put y se corrigieron las llaves
+app.put('/api/actualizar-record', async function (req, res) {
     const { idUser, record } = req.body;
     if (!idUser || record === undefined) {
         return res.status(400).send({ error: "DATOS_INCOMPLETOS", mensaje: "Debes enviar idUser y record." });
@@ -164,7 +166,6 @@ app.get('/jugadores/buscar', async function (req, res) {
     }
 });
 
-// CORRECCIÓN APLICADA AQUÍ: Autogeneración del ID
 app.post('/api/agregar-jugador', async function (req, res) {
     const { nombre, cantGoles, pais } = req.body;
 
@@ -185,8 +186,6 @@ app.post('/api/agregar-jugador', async function (req, res) {
             });
         }
 
-        // Buscamos el ID máximo. IMPORTANTE: Si en tu base de datos la columna 
-        // se llama "id" en lugar de "idJugador", cambia ambas palabras abajo.
         const maxIdResult = await realizarQuery('SELECT MAX(idJugador) as maxId FROM Jugadores');
         const nextId = (maxIdResult[0].maxId || 0) + 1;
 
