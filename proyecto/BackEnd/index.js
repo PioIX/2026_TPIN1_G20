@@ -1,4 +1,4 @@
-require('dotenv').config(); // TIENE que ir antes de requerir ./modulos/mysql
+require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
@@ -32,7 +32,6 @@ app.get('/jugadores', async function (req, res) {
 // AUTENTICACIÓN (LOGIN Y REGISTRO)
 // ==========================================
 
-// LOGIN — busca por email, que es lo que manda el formulario de login del front
 app.post('/api/login', async function (req, res) {
     const { email, password } = req.body;
 
@@ -57,19 +56,14 @@ app.post('/api/login', async function (req, res) {
         let passwordCorrecta;
 
         if (usuarioValido.password.startsWith('$2')) {
-            // Password guardada como hash bcrypt (usuarios nuevos)
             passwordCorrecta = await bcrypt.compare(password, usuarioValido.password);
         } else {
-            // Compatibilidad con passwords viejas en texto plano: si coincide,
-            // se migra a hash automáticamente en este mismo login.
             passwordCorrecta = usuarioValido.password === password;
             if (passwordCorrecta) {
                 try {
                     const nuevoHash = await bcrypt.hash(password, 10);
                     await realizarQuery("UPDATE Usuarios SET password = ? WHERE idUser = ?", [nuevoHash, usuarioValido.idUser]);
                 } catch (migrationError) {
-                    // No dejamos que un fallo de migración (ej: columna 'password' muy corta)
-                    // le impida entrar a alguien que puso la contraseña correcta.
                     console.log("No se pudo migrar el password a hash:", migrationError.message);
                 }
             }
@@ -82,7 +76,8 @@ app.post('/api/login', async function (req, res) {
                 usuario: {
                     idUser: usuarioValido.idUser,
                     name: usuarioValido.name,
-                    record: usuarioValido.record
+                    record: usuarioValido.record,
+                    esAdmin: !!usuarioValido.esAdmin
                 }
             });
         } else {
@@ -98,7 +93,6 @@ app.post('/api/login', async function (req, res) {
     }
 });
 
-// REGISTRO
 app.post('/api/registro', async function (req, res) {
     const { name, email, password } = req.body;
 
@@ -141,8 +135,9 @@ app.post('/api/registro', async function (req, res) {
             error: error.message
         });
     }
+});
 
-    app.post('/api/actualizar-record', async function (req, res) {
+app.post('/api/actualizar-record', async function (req, res) {
     const { idUser, record } = req.body;
     if (!idUser || record === undefined) {
         return res.status(400).send({ error: "DATOS_INCOMPLETOS", mensaje: "Debes enviar idUser y record." });
@@ -154,15 +149,99 @@ app.post('/api/registro', async function (req, res) {
         res.status(500).send({ actualizado: false, mensaje: "No se pudo actualizar el récord", error: error.message });
     }
 });
-});
 
-//----------Jugadores---------
-app.get('/jugadores', async function (req, res) {
+// ==========================================
+// ADMINISTRACIÓN DE FUTBOLISTAS
+// ==========================================
+
+app.get('/jugadores/buscar', async function (req, res) {
+    const nombre = req.query.nombre || "";
     try {
-        let respuesta = await realizarQuery("SELECT * FROM Jugadores;");
+        let respuesta = await realizarQuery("SELECT * FROM Jugadores WHERE nombre LIKE ?", [`%${nombre}%`]);
         res.send({ jugadores: respuesta });
     } catch (error) {
         res.status(500).send({ error: error.message });
+    }
+});
+
+// CORRECCIÓN APLICADA AQUÍ: Autogeneración del ID
+app.post('/api/agregar-jugador', async function (req, res) {
+    const { nombre, cantGoles, pais } = req.body;
+
+    if (!nombre || cantGoles === undefined || cantGoles === null || !pais) {
+        return res.status(400).send({
+            agregadoExitoso: false,
+            mensaje: "Debes enviar nombre, cantGoles y pais."
+        });
+    }
+
+    try {
+        const existente = await realizarQuery("SELECT * FROM Jugadores WHERE nombre = ?", [nombre]);
+
+        if (existente.length > 0) {
+            return res.status(409).send({
+                agregadoExitoso: false,
+                mensaje: "Ese futbolista ya existe en la base de datos."
+            });
+        }
+
+        // Buscamos el ID máximo. IMPORTANTE: Si en tu base de datos la columna 
+        // se llama "id" en lugar de "idJugador", cambia ambas palabras abajo.
+        const maxIdResult = await realizarQuery('SELECT MAX(idJugador) as maxId FROM Jugadores');
+        const nextId = (maxIdResult[0].maxId || 0) + 1;
+
+        await realizarQuery(
+            "INSERT INTO Jugadores (idJugador, nombre, cantGoles, pais) VALUES (?, ?, ?, ?)",
+            [nextId, nombre, cantGoles, pais]
+        );
+
+        res.send({
+            agregadoExitoso: true,
+            mensaje: "Futbolista agregado con éxito."
+        });
+
+    } catch (error) {
+        res.status(500).send({
+            agregadoExitoso: false,
+            mensaje: "No se pudo agregar el futbolista",
+            error: error.message
+        });
+    }
+});
+
+app.post('/api/eliminar-jugador', async function (req, res) {
+    const { nombre } = req.body;
+
+    if (!nombre) {
+        return res.status(400).send({
+            eliminadoExitoso: false,
+            mensaje: "Debes enviar el nombre del futbolista a eliminar."
+        });
+    }
+
+    try {
+        const existente = await realizarQuery("SELECT * FROM Jugadores WHERE nombre = ?", [nombre]);
+
+        if (existente.length === 0) {
+            return res.status(404).send({
+                eliminadoExitoso: false,
+                mensaje: "Ese futbolista no existe en la base de datos."
+            });
+        }
+
+        await realizarQuery("DELETE FROM Jugadores WHERE nombre = ?", [nombre]);
+
+        res.send({
+            eliminadoExitoso: true,
+            mensaje: "Futbolista eliminado con éxito."
+        });
+
+    } catch (error) {
+        res.status(500).send({
+            eliminadoExitoso: false,
+            mensaje: "No se pudo eliminar el futbolista",
+            error: error.message
+        });
     }
 });
 

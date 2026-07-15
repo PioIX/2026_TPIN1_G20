@@ -30,7 +30,8 @@ CREATE TABLE Partidas (
     puntuacion INT,
     FOREIGN KEY (idUser) REFERENCES Usuarios(idUser)
 );
-
+INSERT INTO Usuarios (idUser, `name`, email, `password`, record, esAdmin) VALUES
+(1000000, 'admin', 'admin', 'pass', 0, true);
 
 INSERT INTO Jugadores (id, cantGoles, nombre, pais) VALUES
 (1, 16, 'Miroslav Klose', 'Alemania'),

@@ -171,6 +171,41 @@
     actualizarInterfaz();
 </script>
 
+<div id="seccion-admin" style="display: none;">
+    <div class="auth-wrapper">
+        <div class="login-container">
+            <h2>ADMINISTRADOR</h2>
+
+            <div class="input-group">
+                <label for="admin-nombre">Nombre del Futbolista</label>
+                <input type="text" id="admin-nombre" placeholder="Nombre (se usa para buscar, agregar y eliminar)">
+            </div>
+
+            <button type="button" class="btn-login" onclick="buscarFutbolistaAdmin()">Buscar</button>
+
+            <div id="admin-resultados-busqueda" style="margin-top: 10px; margin-bottom: 10px;"></div>
+
+            <hr>
+
+            <div class="input-group">
+                <label for="admin-goles">Cantidad de Goles</label>
+                <input type="number" id="admin-goles" placeholder="Cantidad de goles en mundiales">
+            </div>
+
+            <div class="input-group">
+                <label for="admin-pais">País</label>
+                <input type="text" id="admin-pais" placeholder="País (debe coincidir con el nombre del archivo de bandera)">
+            </div>
+
+            <button type="button" class="btn-register" onclick="handleAgregarFutbolista()">Agregar</button>
+            <button type="button" class="btn-eliminar" onclick="handleEliminarFutbolista()">Eliminar</button>
+
+            <br><br>
+            <button onclick="logout()" class="btn-login">Cerrar Sesión</button>
+        </div>
+    </div>
+</div>
+
 <div id="seccion-gameover" style="display: none;">
     <div class="auth-wrapper">
         <div class="login-container">

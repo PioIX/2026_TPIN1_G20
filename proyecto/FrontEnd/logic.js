@@ -8,7 +8,7 @@ const API_URL = "http://localhost:4000";
 let jugadorIzquierdo = null; 
 let jugadorDerecho = null; 
 
-//-----------juago----------
+//-----------juego----------
 function iniciarJuego() {
     document.getElementById('seccion-login').style.display = 'none';
     document.getElementById('seccion-gameover').style.display = 'none';
@@ -54,6 +54,7 @@ async function llamadoAlGet(endpoint) {
   }
 }
 
+// CORRECCIÓN APLICADA AQUÍ
 async function llamadoAlPost(endpoint, datos) {
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {
@@ -61,21 +62,31 @@ async function llamadoAlPost(endpoint, datos) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(datos)
     });
-    const data = await response.json();
+
+    let data = null;
+    const contentType = response.headers.get("content-type");
+    
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json();
+    } else {
+      const textData = await response.text();
+      data = textData ? { mensaje: textData } : null; 
+    }
+
     return { status: response.status, data };
   } catch (error) {
-    // Esto se dispara SOLO si el fetch no pudo ni siquiera llegar al servidor
-    // (server apagado, puerto mal, CORS bloqueado, etc.)
     console.error("Error en llamadoAlPost (sin conexión real):", error);
     return { status: 0, data: null };
   }
 }
+
 async function actualizarRecordEnBackend(idUser, nuevoRecord) {
   const resultado = await llamadoAlPost("/api/actualizar-record", { idUser, record: nuevoRecord });
   if (resultado.status !== 200) {
     console.error("No se pudo guardar el nuevo récord en la base de datos");
   }
 }
+
 // ---------- JUGADORES ----------
 async function cargarJugadores() {
   const respuesta = await llamadoAlGet("/jugadores");
@@ -113,7 +124,6 @@ async function login(email, password) {
   if (resultado.status === 401) {
     return { tipo: "PASSWORD_INCORRECTA" };
   }
-  // Cualquier otro código (típicamente 500) => mostramos el mensaje real que mandó el server
   return {
     tipo: "ERROR_SERVIDOR",
     mensaje: (resultado.data && (resultado.data.mensaje || resultado.data.error)) || "Error desconocido del servidor"
@@ -143,12 +153,17 @@ async function handleLogin() {
       recordUsuario = res.usuario.record;
 
       try {
-        let usuarioActual = new User(res.usuario.name, email, password);
-        usuarioActual.idUser = res.usuario.idUser; // pisa el id autogenerado por el real de la BD
+        let usuarioActual = new User(res.usuario.name, email, password, res.usuario.esAdmin);
+        usuarioActual.idUser = res.usuario.idUser;
         usuarioActual.record = res.usuario.record;
         users.push(usuarioActual);
       } catch (error) {
         console.error("Error guardando usuario en el array 'users':", error);
+      }
+
+      if (res.usuario.esAdmin) {
+        mostrarPantallaAdmin();
+        break;
       }
 
       try {
@@ -156,7 +171,8 @@ async function handleLogin() {
       } catch (error) {
         console.error("Error cargando jugadores:", error);
       }
-  iniciarJuego();
+      iniciarJuego();
+      break;
   }
 }
 
@@ -212,6 +228,7 @@ function logout() {
 
     document.getElementById('seccion-juego').style.display = 'none';
     document.getElementById('seccion-gameover').style.display = 'none';
+    document.getElementById('seccion-admin').style.display = 'none';
     document.getElementById('seccion-login').style.display = 'flex';
 
     ui.showModal("Sesión cerrada correctamente");
@@ -235,7 +252,7 @@ function HoL(eleccion) {
 
   let esCorrecto;
   if (golesDerecho === golesIzquierdo) {
-    esCorrecto = true; // empate: siempre cuenta como acierto
+    esCorrecto = true;
   } else if (eleccion === "mayor") {
     esCorrecto = golesDerecho > golesIzquierdo;
   } else {
@@ -248,13 +265,11 @@ function HoL(eleccion) {
       higherscore = currentscore;
     }
 
-    // El jugador que estaba oculto a la derecha pasa a la izquierda, ya visible
     jugadorIzquierdo = jugadorDerecho;
     jugador1 = jugadorIzquierdo.nombre;
     cant1 = jugadorIzquierdo.cantGoles;
     urlBandera1 = "imagenes/" + jugadorIzquierdo.pais + ".png";
 
-    // Nuevo jugador random a la derecha, distinto del que acaba de pasar a la izquierda
     jugadorDerecho = elegirJugadorRandomDistintoDe(jugadorIzquierdo);
     jugador2 = jugadorDerecho.nombre;
     urlBandera2 = "imagenes/" + jugadorDerecho.pais + ".png";
@@ -284,7 +299,6 @@ function mostrarPantallaFinal() {
       }
     }
 
-    // Lo persiste en la base de datos
     actualizarRecordEnBackend(userLoged, recordUsuario);
   }
 
@@ -297,4 +311,89 @@ function mostrarPantallaFinal() {
 
 function continuarJuego() {
   iniciarJuego();
+}
+
+// ---------- ADMINISTRADOR ----------
+function mostrarPantallaAdmin() {
+  document.getElementById('seccion-login').style.display = 'none';
+  document.getElementById('seccion-juego').style.display = 'none';
+  document.getElementById('seccion-gameover').style.display = 'none';
+  document.getElementById('seccion-admin').style.display = 'block';
+}
+
+async function buscarFutbolistaAdmin() {
+  const nombre = document.getElementById('admin-nombre').value.trim();
+  const contenedorResultados = document.getElementById('admin-resultados-busqueda');
+
+  if (!nombre) {
+    ui.showModal("Atención", "Escribe un nombre para buscar.");
+    return;
+  }
+
+  const respuesta = await llamadoAlGet(`/jugadores/buscar?nombre=${encodeURIComponent(nombre)}`);
+
+  contenedorResultados.innerHTML = "";
+
+  if (respuesta && Array.isArray(respuesta.jugadores) && respuesta.jugadores.length > 0) {
+    respuesta.jugadores.forEach(function (jugador) {
+      const item = document.createElement('p');
+      item.textContent = jugador.nombre + " — " + jugador.cantGoles + " goles — " + jugador.pais;
+      contenedorResultados.appendChild(item);
+    });
+  } else {
+    contenedorResultados.textContent = "No se encontraron futbolistas con ese nombre.";
+  }
+}
+
+async function handleAgregarFutbolista() {
+  const nombre = document.getElementById('admin-nombre').value.trim();
+  const cantGoles = document.getElementById('admin-goles').value;
+  const pais = document.getElementById('admin-pais').value.trim();
+
+  if (!nombre || cantGoles === "" || !pais) {
+    ui.showModal("Error", "Debes completar nombre, cantidad de goles y país.");
+    return;
+  }
+
+  const resultado = await llamadoAlPost("/api/agregar-jugador", {
+    nombre: nombre,
+    cantGoles: Number(cantGoles),
+    pais: pais
+  });
+
+  if (resultado.status === 0) {
+    ui.showModal("Error", "No se pudo conectar con el servidor. ¿Está corriendo el backend en el puerto 4000?");
+  } else if (resultado.status === 200 && resultado.data.agregadoExitoso) {
+    ui.showModal("Éxito", "Futbolista agregado correctamente.");
+    document.getElementById('admin-nombre').value = "";
+    document.getElementById('admin-goles').value = "";
+    document.getElementById('admin-pais').value = "";
+  } else if (resultado.status === 409) {
+    ui.showModal("Atención", "Ese futbolista ya existe en la base de datos. No se puede crear de nuevo.");
+  } else {
+    ui.showModal("Error del servidor", (resultado.data && resultado.data.mensaje) || "No se pudo agregar el futbolista.");
+  }
+}
+
+async function handleEliminarFutbolista() {
+  const nombre = document.getElementById('admin-nombre').value.trim();
+
+  if (!nombre) {
+    ui.showModal("Error", "Debes escribir el nombre del futbolista a eliminar.");
+    return;
+  }
+
+  const resultado = await llamadoAlPost("/api/eliminar-jugador", { nombre: nombre });
+
+  if (resultado.status === 0) {
+    ui.showModal("Error", "No se pudo conectar con el servidor. ¿Está corriendo el backend en el puerto 4000?");
+  } else if (resultado.status === 200 && resultado.data.eliminadoExitoso) {
+    ui.showModal("Éxito", "Futbolista eliminado correctamente.");
+    document.getElementById('admin-nombre').value = "";
+    document.getElementById('admin-resultados-busqueda').innerHTML = "";
+  } else if (resultado.status === 404) {
+    ui.showModal("Atención", "Ese futbolista no existe en la base de datos.");
+  } else {
+    ui.showModal("Error del servidor", (resultado.data && resultado.data.mensaje) || "No se pudo eliminar el futbolista.");
+  }
 }
